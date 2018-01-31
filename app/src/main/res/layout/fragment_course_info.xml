@@ -20,6 +20,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <Button
+                android:id="@+id/fragment_course_info_rate_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_course_info_join_btn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_reviews_text"
+                tools:text="@string/rate" />
+
             <TextView
                 android:id="@+id/fragment_course_info_course_name_label"
                 android:layout_width="wrap_content"
@@ -163,6 +176,19 @@
                 android:text="@string/targetAudienceText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_course_target_audience_label" />
+
+            <Button
+                android:id="@+id/fragment_course_info_join_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/fragment_course_info_rate_btn"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_reviews_text"
+                tools:text="@string/join" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

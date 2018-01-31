@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_course_search_courses_lv"
+        app:layout_constraintBottom_toBottomOf="@+id/autoCompleteTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_search_category_default" />
 
