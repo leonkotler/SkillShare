@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/fullName" />
@@ -20,10 +19,9 @@
     <TextView
         android:id="@+id/fragment_user_details_email_label"
         android:layout_width="wrap_content"
-        android:layout_height="23dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_fullname_label"
         tools:text="@string/email" />
@@ -34,7 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_email_label"
         tools:text="@string/college" />
@@ -44,7 +41,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:text="TextView"
         app:layout_constraintBaseline_toBaselineOf="@+id/fragment_user_details_fullname_label"
         app:layout_constraintStart_toEndOf="@+id/fragment_user_details_fullname_label" />
 
@@ -52,7 +48,6 @@
         android:id="@+id/fragment_user_details_email_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
         app:layout_constraintBaseline_toBaselineOf="@+id/fragment_user_details_email_label"
         app:layout_constraintStart_toStartOf="@+id/fragment_user_details_fullname_value" />
 
@@ -60,7 +55,6 @@
         android:id="@+id/fragment_user_details_college_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
         app:layout_constraintBaseline_toBaselineOf="@+id/fragment_user_details_college_label"
         app:layout_constraintStart_toStartOf="@+id/fragment_user_details_email_value" />
 
@@ -82,7 +76,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
-        android:text="TextView"
+        android:text="@string/takingCourses"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_divider"
@@ -98,7 +92,8 @@
         android:text="@string/offeringCourses"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_taking_courses_lv" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_taking_courses_lv"
+        tools:text="@string/offeringCourses" />
 
     <ListView
         android:id="@+id/fragment_user_details_taking_courses_lv"
@@ -122,5 +117,45 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_offering_courses_label" />
+
+    <ProgressBar
+        android:id="@+id/fragment_user_details_offering_courses_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_user_details_offering_courses_lv" />
+
+    <ProgressBar
+        android:id="@+id/fragment_user_details_taking_courses_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_user_details_taking_courses_lv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_taking_courses_label" />
+
+    <ProgressBar
+        android:id="@+id/fragment_user_details_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_user_details_divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

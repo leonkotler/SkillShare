@@ -1,4 +1,4 @@
-package com.leon.skillshare.activities;
+package com.leon.skillshare.domain;
 
 /**
  * Created by leonk on 02-Feb-18.

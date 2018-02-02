@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import com.leon.skillshare.R;
 
-/**
- * Created by leonk on 17-Jan-18.
- */
 
 public class AboutFragment extends Fragment {
 
