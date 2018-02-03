@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leon.skillshare.R;
-import com.leon.skillshare.domain.Course;
 import com.leon.skillshare.domain.CourseDetails;
 import com.leon.skillshare.domain.User;
 import com.leon.skillshare.viewmodels.UserDetailsViewModel;
@@ -59,8 +57,6 @@ public class UserDetailsFragment extends Fragment {
 
     private void populateTakingCoursesList() {
         takingCoursesProgressBar.setVisibility(View.VISIBLE);
-
-
     }
 
     private void populateOfferingCoursesList() {
@@ -125,11 +121,11 @@ public class UserDetailsFragment extends Fragment {
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             if (view == null){
-                view = View.inflate(getContext(),R.layout.user_details_course_row, null);
+                view = View.inflate(getContext(),R.layout.course_row, null);
             }
 
-            TextView courseName = view.findViewById(R.id.course_details_course_name);
-            final ImageView courseImg = view.findViewById(R.id.course_details_course_image);
+            TextView courseName = view.findViewById(R.id.course_row_course_name);
+            final ImageView courseImg = view.findViewById(R.id.course_row_course_image);
 
             final CourseDetails courseInCtx = offeringCourseList.get(position);
             courseName.setText(courseInCtx.getCourseName());
