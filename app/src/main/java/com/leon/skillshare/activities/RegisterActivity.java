@@ -23,6 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.leon.skillshare.R;
 import com.leon.skillshare.domain.User;
 
+import java.util.HashMap;
+
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -77,11 +79,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         User userToRegister = new User();
         userToRegister.setEmail(emailEditText.getText().toString().trim());
         userToRegister.setFullName(fullNameEditText.getText().toString().trim());
-        userToRegister.setPassword(passwordEditText.getText().toString().trim());
         userToRegister.setCollege(collegeSpinner.getSelectedItem().toString());
+        userToRegister.setCoursesOffering(new HashMap<String, String>());
+        userToRegister.setCoursesTaking(new HashMap<String, String>());
 
-        if (userDetailsAreValid(userToRegister)) {
-            submitUserDetailsToDB(userToRegister);
+        String userPassword = passwordEditText.getText().toString();
+
+        if (userDetailsAreValid(userToRegister) && isPasswordIsValid(userPassword)) {
+            submitUserDetailsToDB(userToRegister, userPassword);
         } else
             registerBtn.setClickable(true);
     }
@@ -90,7 +95,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private boolean userDetailsAreValid(User userToRegister) {
 
         return (isEmailValid(userToRegister.getEmail())
-                && isPasswordIsValid(userToRegister.getPassword())
                 && isFullNameValid(userToRegister.getFullName())
                 && isCollegeValid(userToRegister.getCollege()));
     }
@@ -136,17 +140,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return collegeName != null;
     }
 
-    private void submitUserDetailsToDB(final User userToRegister) {
+    private void submitUserDetailsToDB(final User userToRegister, String userPassword) {
         Log.d(TAG, "submitUserDetailsToDB: Submitting user: " + userToRegister.toString());
         progressBar.setVisibility(View.VISIBLE);
-        mAuth.createUserWithEmailAndPassword(userToRegister.getEmail(), userToRegister.getPassword())
+        mAuth.createUserWithEmailAndPassword(userToRegister.getEmail(), userPassword)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
                             String userId = task.getResult().getUser().getUid();
-                            Log.d(TAG, "User: " + userId + " has been created" );
+                            Log.d(TAG, "User has been created" );
                             createUserWithDetails(userId, userToRegister);
 
                         } else if (task.getException() instanceof FirebaseAuthUserCollisionException) {

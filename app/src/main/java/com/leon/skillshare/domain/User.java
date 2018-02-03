@@ -1,23 +1,23 @@
 package com.leon.skillshare.domain;
 
-/**
- * Created by leonk on 02-Feb-18.
- */
+import java.util.Map;
 
 public class User {
 
     private String userId;
     private String email;
-    private String password;
     private String fullName;
     private String college;
+    private Map<String, String> coursesTaking;
+    private Map<String, String> coursesOffering;
 
-    public User(String userId, String email, String password, String fullName, String college) {
+    public User(String userId, String email, String fullName, String college, Map<String, String> coursesTaking, Map<String, String> coursesOffering) {
         this.userId = userId;
         this.email = email;
-        this.password = password;
         this.fullName = fullName;
         this.college = college;
+        this.coursesTaking = coursesTaking;
+        this.coursesOffering = coursesOffering;
     }
 
     public User() {
@@ -39,25 +39,6 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", college='" + college + '\'' +
-                '}';
-    }
-
     public String getFullName() {
         return fullName;
     }
@@ -72,5 +53,33 @@ public class User {
 
     public void setCollege(String college) {
         this.college = college;
+    }
+
+    public Map<String, String> getCoursesTaking() {
+        return coursesTaking;
+    }
+
+    public void setCoursesTaking(Map<String, String> coursesTaking) {
+        this.coursesTaking = coursesTaking;
+    }
+
+    public Map<String, String> getCoursesOffering() {
+        return coursesOffering;
+    }
+
+    public void setCoursesOffering(Map<String, String> coursesOffering) {
+        this.coursesOffering = coursesOffering;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", email='" + email + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", college='" + college + '\'' +
+                ", coursesTaking=" + coursesTaking +
+                ", coursesOffering=" + coursesOffering +
+                '}';
     }
 }

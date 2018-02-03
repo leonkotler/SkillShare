@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Course {
 
-    private String id;
     private String name;
     private String description;
     private String targetAudience;
@@ -18,15 +17,6 @@ public class Course {
     public Course() {
     }
 
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -103,8 +93,7 @@ public class Course {
     @Override
     public String toString() {
         return "Course{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", targetAudience='" + targetAudience + '\'' +
                 ", rating=" + rating +

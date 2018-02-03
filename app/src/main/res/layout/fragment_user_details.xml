@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
+        android:text="@string/fullName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/fullName" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/fragment_user_details_email_label"
@@ -22,9 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
+        android:text="@string/email"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_fullname_label"
-        tools:text="@string/email" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_fullname_label" />
 
     <TextView
         android:id="@+id/fragment_user_details_college_label"
@@ -32,9 +32,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
+        android:text="@string/college"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_email_label"
-        tools:text="@string/college" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_user_details_email_label" />
 
     <TextView
         android:id="@+id/fragment_user_details_fullname_value"

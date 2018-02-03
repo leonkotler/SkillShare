@@ -11,6 +11,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.leon.skillshare.domain.Course;
 import com.leon.skillshare.domain.ServerRequest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class CourseRepository {
     private static final CourseRepository ourInstance = new CourseRepository();
@@ -27,23 +30,37 @@ public class CourseRepository {
     public LiveData<ServerRequest> postNewCourse(final Course course) {
         final MutableLiveData<ServerRequest> postRequest = new MutableLiveData<>();
 
-        DatabaseReference courseToAddRef = database.getReference("courses").child(course.getId());
+        DatabaseReference courseToAddRef = database.getReference("courses").push();
+        final String courseKey = courseToAddRef.getKey();
 
         courseToAddRef.setValue(course).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
+                    updateUserWithOfferedCourse(course.getAuthorId(), courseKey, course);
                     postRequest.setValue(new ServerRequest(true,
-                            "Course created successfully with id: " + course.getId(),
-                            course.getId()));
+                            "Course created successfully",
+                            courseKey));
                 } else {
                     postRequest.setValue(new ServerRequest(false,
                             task.getException().getMessage(),
-                            course.getId()));
+                            courseKey));
                 }
             }
         });
 
         return postRequest;
+    }
+
+    private void updateUserWithOfferedCourse(String authorId, String courseId, Course course) {
+        
+        DatabaseReference updateRef = database.getReference("users")
+                .child(authorId)
+                .child("coursesOffering");
+
+        Map<String, Object> coursesOffering = new HashMap<>();
+        coursesOffering.put(courseId,course.getName());
+
+        updateRef.updateChildren(coursesOffering);
     }
 }

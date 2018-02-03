@@ -9,8 +9,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.leon.skillshare.domain.CourseDetails;
 import com.leon.skillshare.domain.User;
 import com.leon.skillshare.exceptions.CurrentUserRetrievalException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class UserRepository {
@@ -52,5 +56,35 @@ public class UserRepository {
 
     public String getCurrentUserId() {
         return firebaseAuth.getCurrentUser().getUid();
+    }
+
+    public LiveData<List<CourseDetails>> getOfferingCoursesList() {
+
+        final MutableLiveData<List<CourseDetails>> takingCoursesLiveDataList = new MutableLiveData<>();
+        final String currentUserId = firebaseAuth.getCurrentUser().getUid();
+
+        usersRef.child(currentUserId).child("coursesOffering").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                List<CourseDetails> courseDetailsList = new ArrayList<>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    CourseDetails cd = new CourseDetails();
+                    cd.setCourseId(ds.getKey());
+                    cd.setCourseName(ds.getValue(String.class));
+                    courseDetailsList.add(cd);
+                }
+
+                takingCoursesLiveDataList.setValue(courseDetailsList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return takingCoursesLiveDataList;
     }
 }

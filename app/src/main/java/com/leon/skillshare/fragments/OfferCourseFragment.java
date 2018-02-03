@@ -87,7 +87,6 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
     }
 
     private void initCourseDetails(Course course) {
-        course.setId(UUID.randomUUID().toString());
         course.setName(courseNameEt.getText().toString());
         course.setDescription(courseDescriptionEt.getText().toString());
         course.setAuthorId(userDetailsViewModel.getCurrentUserId());
@@ -117,11 +116,19 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
                 submitBtn.setClickable(true);
                 if (serverRequest.isSucceeded()) {
                     Toast.makeText(getContext(), serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
+                    clearInputs();
                 } else {
                     Toast.makeText(getContext(), "An error has occurred: " + serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void clearInputs() {
+        courseNameEt.setText("");
+        courseDescriptionEt.setText("");
+        targetAudienceEt.setText("");
+        priceEt.setText("");
     }
 
     private boolean isCourseNameValid(String name) {
