@@ -117,7 +117,7 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
             StringBuilder sb = new StringBuilder();
 
             for (Map.Entry<String, String> entry : course.getReviews().entrySet())
-                sb.append("\"" + entry.getValue() + "\" by - " + userDetailsViewVm.getCurrentUserEmail() + '\n');
+                sb.append("\"" + entry.getValue() + "\" by - " + entry.getKey() + '\n');
 
             reviewsTv.setText(sb);
         }
