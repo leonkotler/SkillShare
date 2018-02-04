@@ -3,6 +3,7 @@ package com.leon.skillshare.fragments;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leon.skillshare.R;
+import com.leon.skillshare.activities.CourseDetailsActivity;
 import com.leon.skillshare.domain.CourseDetails;
 import com.leon.skillshare.viewmodels.SearchCoursesViewModel;
 
@@ -142,7 +144,10 @@ public class CourseSearchFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(), "You pressed on course " + courseInCtx.getCourseId(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getContext(), CourseDetailsActivity.class);
+                    intent.putExtra("courseId", courseInCtx.getCourseId());
+                    intent.putExtra("viewType", "courseDetails");
+                    startActivity(intent);
                 }
             });
 
