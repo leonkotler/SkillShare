@@ -26,12 +26,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="44dp"
+                android:text="@string/rate"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/fragment_course_info_join_btn"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_reviews_text"
-                tools:text="@string/rate" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_reviews_text" />
 
             <TextView
                 android:id="@+id/fragment_course_info_course_name_label"
@@ -73,32 +74,10 @@
                 android:id="@+id/fragment_course_info_author_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/authorName"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_author_label" />
-
-            <TextView
-                android:id="@+id/fragment_course_info_rating_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/rating"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_course_target_audience_text" />
-
-            <TextView
-                android:id="@+id/fragment_course_info_rating_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="@string/ratingText"
-                app:layout_constraintBaseline_toBaselineOf="@+id/fragment_course_info_rating_label"
-                app:layout_constraintStart_toEndOf="@+id/fragment_course_info_rating_label" />
+                android:layout_marginStart="8dp"
+                android:text="@string/authorEmail"
+                app:layout_constraintBaseline_toBaselineOf="@+id/fragment_course_info_author_label"
+                app:layout_constraintStart_toEndOf="@+id/fragment_course_info_author_label" />
 
             <TextView
                 android:id="@+id/fragment_course_info_author_label"
@@ -110,7 +89,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_rating_label" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_course_target_audience_text" />
 
             <TextView
                 android:id="@+id/fragment_course_info_price_label"
@@ -183,12 +162,37 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
+                android:text="@string/join"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/fragment_course_info_rate_btn"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_reviews_text"
-                tools:text="@string/join" />
+                app:layout_constraintStart_toEndOf="@+id/fragment_course_info_rate_btn" />
+
+            <ProgressBar
+                android:id="@+id/fragment_course_info_progress_bar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="50dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_course_info_course_name_label" />
+
+            <ProgressBar
+                android:id="@+id/fragment_course_info_button_progress_bar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/fragment_course_info_join_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

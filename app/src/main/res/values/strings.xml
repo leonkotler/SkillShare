@@ -18,7 +18,7 @@
     <string name="rating">Rating</string>
     <string name="ratingText">Rating Text</string>
     <string name="author">Author</string>
-    <string name="authorName">Author Name</string>
+    <string name="authorEmail">Author Name</string>
     <string name="price">Price</string>
     <string name="priceAmount">Price Amount</string>
     <string name="reviews">Reviews</string>

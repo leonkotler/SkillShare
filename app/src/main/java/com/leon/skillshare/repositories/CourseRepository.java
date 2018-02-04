@@ -59,18 +59,18 @@ public class CourseRepository {
     }
 
     private void updateUserWithOfferedCourse(String authorId, String courseId, Course course) {
-        
+
         DatabaseReference updateRef = database.getReference("users")
                 .child(authorId)
                 .child("coursesOffering");
 
         Map<String, Object> coursesOffering = new HashMap<>();
-        coursesOffering.put(courseId,course.getName());
+        coursesOffering.put(courseId, course.getName());
 
         updateRef.updateChildren(coursesOffering);
     }
 
-    public LiveData<List<CourseDetails>> getAllCourses(){
+    public LiveData<List<CourseDetails>> getAllCourses() {
 
         final MutableLiveData<List<CourseDetails>> courseDetailsListLiveData = new MutableLiveData<>();
 
@@ -80,7 +80,7 @@ public class CourseRepository {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<CourseDetails> courseDetailsList = new ArrayList<>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     CourseDetails cd = new CourseDetails();
                     cd.setCourseId(ds.getKey());
                     cd.setCourseName(ds.getValue(Course.class).getName());
@@ -99,4 +99,58 @@ public class CourseRepository {
         return courseDetailsListLiveData;
     }
 
+    public LiveData<Course> getCourse(String courseId) {
+
+        DatabaseReference courseRef = database.getReference("courses").child(courseId);
+        final MutableLiveData<Course> courseLiveData = new MutableLiveData<>();
+
+        courseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                courseLiveData.setValue(dataSnapshot.getValue(Course.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return courseLiveData;
+    }
+
+    public LiveData<ServerRequest> registerUserToCourse(final String courseId, final String courseName, final String userId, String userEmail) {
+        final MutableLiveData<ServerRequest> postRequest = new MutableLiveData<>();
+
+        DatabaseReference registeredUsers = database.getReference("courses").child(courseId).child("registeredUsers");
+
+        Map<String, Object> newUserRegisteredEntry = new HashMap<>();
+        newUserRegisteredEntry.put(userId, userEmail);
+
+        registeredUsers.updateChildren(newUserRegisteredEntry).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    postRequest.setValue(new ServerRequest(true, "Registered successfully", courseId));
+                    updateUserWithRegisteredCourse(userId,courseId,courseName);
+                } else {
+                    postRequest.setValue(new ServerRequest(false, task.getException().getMessage(), courseId));
+                }
+            }
+        });
+
+        return postRequest;
+    }
+
+    private void updateUserWithRegisteredCourse(String userId, String courseId, String courseName) {
+        DatabaseReference updateRef = database.getReference("users")
+                .child(userId)
+                .child("coursesTaking");
+
+        Map<String, Object> coursesTaking = new HashMap<>();
+        coursesTaking.put(courseId, courseName);
+
+        updateRef.updateChildren(coursesTaking);
+    }
 }

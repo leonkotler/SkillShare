@@ -19,8 +19,7 @@ import com.leon.skillshare.domain.ServerRequest;
 import com.leon.skillshare.viewmodels.OfferCourseViewModel;
 import com.leon.skillshare.viewmodels.UserDetailsViewModel;
 
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.HashMap;
 
 
 public class OfferCourseFragment extends Fragment implements View.OnClickListener {
@@ -90,16 +89,15 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
         course.setName(courseNameEt.getText().toString());
         course.setDescription(courseDescriptionEt.getText().toString());
         course.setAuthorId(userDetailsViewModel.getCurrentUserId());
+        course.setAuthorEmail(userDetailsViewModel.getCurrentUserEmail());
         try {
             course.setPrice(Double.parseDouble(priceEt.getText().toString()));
         } catch (NumberFormatException e){
             course.setPrice(0);
         }
         course.setTargetAudience(targetAudienceEt.getText().toString());
-        course.setRating(0);
-        course.setJoinRequestUserIds(new ArrayList<String>());
-        course.setRegisteredUserIds(new ArrayList<String>());
-        course.setReviews(new ArrayList<String>());
+        course.setRegisteredUsers(new HashMap<String, String>());
+        course.setReviews(new HashMap<String, String>());
     }
 
     private boolean courseDetailsAreValid(Course course) {

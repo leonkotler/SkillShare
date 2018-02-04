@@ -36,6 +36,7 @@ public class UserDetailsFragment extends Fragment {
     private ProgressBar offeringCoursesProgressBar;
     private ProgressBar userDetailsProgressBar;
     private List<CourseDetails> offeringCourseList = new ArrayList<>();
+    private List<CourseDetails> takingCourseList = new ArrayList<>();
 
     private UserDetailsViewModel userDetailsVm;
 
@@ -59,6 +60,17 @@ public class UserDetailsFragment extends Fragment {
 
     private void populateTakingCoursesList() {
         takingCoursesProgressBar.setVisibility(View.VISIBLE);
+        final TakingCoursesListAdapter adapter = new TakingCoursesListAdapter();
+        takingCoursesLv.setAdapter(adapter);
+
+        userDetailsVm.getTakingCoursesList().observe(this, new Observer<List<CourseDetails>>() {
+            @Override
+            public void onChanged(@Nullable List<CourseDetails> courseDetails) {
+                takingCoursesProgressBar.setVisibility(View.GONE);
+                takingCourseList = courseDetails;
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void populateOfferingCoursesList() {
@@ -139,6 +151,49 @@ public class UserDetailsFragment extends Fragment {
                     Intent intent = new Intent(getContext(), CourseDetailsActivity.class);
                     intent.putExtra("courseId", courseInCtx.getCourseId());
                     intent.putExtra("viewType", "offerCourseDetails");
+                    startActivity(intent);
+                }
+            });
+
+            return view;
+        }
+    }
+
+    class TakingCoursesListAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return takingCourseList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return takingCourseList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            if (view == null){
+                view = View.inflate(getContext(),R.layout.course_row, null);
+            }
+
+            TextView courseName = view.findViewById(R.id.course_row_course_name);
+            final ImageView courseImg = view.findViewById(R.id.course_row_course_image);
+
+            final CourseDetails courseInCtx = takingCourseList.get(position);
+            courseName.setText(courseInCtx.getCourseName());
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent = new Intent(getContext(), CourseDetailsActivity.class);
+                    intent.putExtra("courseId", courseInCtx.getCourseId());
+                    intent.putExtra("viewType", "courseDetails");
                     startActivity(intent);
                 }
             });

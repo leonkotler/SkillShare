@@ -60,10 +60,39 @@ public class UserRepository {
 
     public LiveData<List<CourseDetails>> getOfferingCoursesList() {
 
-        final MutableLiveData<List<CourseDetails>> takingCoursesLiveDataList = new MutableLiveData<>();
+        final MutableLiveData<List<CourseDetails>> offeringCoursesLiveDataList = new MutableLiveData<>();
         final String currentUserId = firebaseAuth.getCurrentUser().getUid();
 
         usersRef.child(currentUserId).child("coursesOffering").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                List<CourseDetails> courseDetailsList = new ArrayList<>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    CourseDetails cd = new CourseDetails();
+                    cd.setCourseId(ds.getKey());
+                    cd.setCourseName(ds.getValue(String.class));
+                    courseDetailsList.add(cd);
+                }
+
+                offeringCoursesLiveDataList.setValue(courseDetailsList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return offeringCoursesLiveDataList;
+    }
+
+    public LiveData<List<CourseDetails>> getTakingCoursesList() {
+        final MutableLiveData<List<CourseDetails>> takingCoursesLiveDataList = new MutableLiveData<>();
+        final String currentUserId = firebaseAuth.getCurrentUser().getUid();
+
+        usersRef.child(currentUserId).child("coursesTaking").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -87,4 +116,10 @@ public class UserRepository {
 
         return takingCoursesLiveDataList;
     }
+
+    public String getCurrentUserEmail() {
+        return firebaseAuth.getCurrentUser().getEmail();
+    }
+
+
 }

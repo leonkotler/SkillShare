@@ -1,18 +1,18 @@
 package com.leon.skillshare.domain;
 
-import java.util.List;
+import java.util.Map;
 
 public class Course {
 
     private String name;
     private String description;
     private String targetAudience;
-    private int rating;
     private String authorId;
+    private String authorEmail;
+
     private double price;
-    private List<String> reviews;
-    private List<String> registeredUserIds;
-    private List<String> joinRequestUserIds;
+    private Map<String, String> reviews;
+    private Map<String, String> registeredUsers;
 
     public Course() {
     }
@@ -24,6 +24,14 @@ public class Course {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAuthorEmail() {
+        return authorEmail;
+    }
+
+    public void setAuthorEmail(String authorEmail) {
+        this.authorEmail = authorEmail;
     }
 
     public String getDescription() {
@@ -42,14 +50,6 @@ public class Course {
         this.targetAudience = targetAudience;
     }
 
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
     public String getAuthorId() {
         return authorId;
     }
@@ -66,42 +66,33 @@ public class Course {
         this.price = price;
     }
 
-    public List<String> getReviews() {
+    public Map<String, String> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<String> reviews) {
+    public void setReviews(Map<String, String> reviews) {
         this.reviews = reviews;
     }
 
-    public List<String> getRegisteredUserIds() {
-        return registeredUserIds;
+    public Map<String, String> getRegisteredUsers() {
+        return registeredUsers;
     }
 
-    public void setRegisteredUserIds(List<String> registeredUserIds) {
-        this.registeredUserIds = registeredUserIds;
-    }
-
-    public List<String> getJoinRequestUserIds() {
-        return joinRequestUserIds;
-    }
-
-    public void setJoinRequestUserIds(List<String> joinRequestUserIds) {
-        this.joinRequestUserIds = joinRequestUserIds;
+    public void setRegisteredUsers(Map<String, String> registeredUsers) {
+        this.registeredUsers = registeredUsers;
     }
 
     @Override
     public String toString() {
-        return "Course{" +
+        return "Course {" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", targetAudience='" + targetAudience + '\'' +
-                ", rating=" + rating +
                 ", authorId='" + authorId + '\'' +
+                ", authorEmail='" + authorEmail + '\'' +
                 ", price=" + price +
                 ", reviews=" + reviews +
-                ", registeredUserIds=" + registeredUserIds +
-                ", joinRequestUserIds=" + joinRequestUserIds +
+                ", registeredUsers=" + registeredUsers +
                 '}';
     }
 }
