@@ -10,13 +10,13 @@
         android:id="@+id/fragment_offer_course_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="25dp"
         android:text="@string/offerNewCourse"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_offer_course_course_name_input"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,54 +72,56 @@
         android:id="@+id/fragment_offer_course_course_name_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:ems="10"
         android:hint="@string/courseName"
         android:inputType="textPersonName"
         app:layout_constraintBaseline_toBaselineOf="@+id/fragment_offer_course_name_label"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/fragment_offer_course_target_audience_label" />
 
     <EditText
         android:id="@+id/fragment_offer_course_description_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:ems="10"
         android:hint="@string/description"
         android:inputType="textMultiLine"
         app:layout_constraintBaseline_toBaselineOf="@+id/fragment_offer_course_description_label"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/fragment_offer_course_target_audience_label" />
 
     <EditText
         android:id="@+id/fragment_offer_course_target_audience_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:ems="10"
         android:hint="@string/targetAudience"
         android:inputType="textPersonName"
         app:layout_constraintBaseline_toBaselineOf="@+id/fragment_offer_course_target_audience_label"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/fragment_offer_course_target_audience_label" />
 
     <EditText
         android:id="@+id/fragment_offer_course_price_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:ems="10"
         android:hint="@string/price"
         android:inputType="numberDecimal"
         app:layout_constraintBaseline_toBaselineOf="@+id/fragment_offer_course_price_label"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/fragment_offer_course_target_audience_label" />
 
     <Button
         android:id="@+id/fragment_offer_course_submit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="50dp"
         android:text="@string/submit"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_offer_course_price_input" />
