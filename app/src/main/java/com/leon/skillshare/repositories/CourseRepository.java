@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.leon.skillshare.domain.Course;
 import com.leon.skillshare.domain.CourseDetails;
+import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.domain.ServerRequest;
 
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ public class CourseRepository {
         DatabaseReference courseRef = database.getReference("courses").child(courseId);
         final MutableLiveData<Course> courseLiveData = new MutableLiveData<>();
 
-        courseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        courseRef.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -133,7 +134,7 @@ public class CourseRepository {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     postRequest.setValue(new ServerRequest(true, "Registered successfully", courseId));
-                    updateUserWithRegisteredCourse(userId,courseId,courseName);
+                    updateUserWithRegisteredCourse(userId, courseId, courseName);
                 } else {
                     postRequest.setValue(new ServerRequest(false, task.getException().getMessage(), courseId));
                 }
@@ -152,5 +153,28 @@ public class CourseRepository {
         coursesTaking.put(courseId, courseName);
 
         updateRef.updateChildren(coursesTaking);
+    }
+
+    public LiveData<ServerRequest> postReview(final String courseId, Review review) {
+
+        final MutableLiveData<ServerRequest> postRequest = new MutableLiveData<>();
+
+        Map<String, Object> newReviewEntry = new HashMap<>();
+        newReviewEntry.put(review.getUserId(), review);
+
+        DatabaseReference courseReviews = database.getReference("courses").child(courseId).child("reviews");
+
+        courseReviews.updateChildren(newReviewEntry).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    postRequest.setValue(new ServerRequest(true, "Review added successfully", courseId));
+                } else {
+                    postRequest.setValue(new ServerRequest(false, task.getException().getMessage(), courseId));
+                }
+            }
+        });
+
+        return postRequest;
     }
 }

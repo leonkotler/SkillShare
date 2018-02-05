@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.leon.skillshare.domain.Course;
+import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.domain.ServerRequest;
 import com.leon.skillshare.repositories.CourseRepository;
 
@@ -14,7 +15,7 @@ public class CourseDetailsViewModel extends ViewModel {
     private final CourseRepository courseRepository;
     private Map<String, String> currentCourseRegisteredUsersMap;
     private Course currentCourse;
-    private Map<String, String> currentCourseReviews;
+    private Map<String, Review> currentCourseReviews;
 
     public CourseDetailsViewModel() {
         courseRepository = CourseRepository.getInstance();
@@ -32,11 +33,11 @@ public class CourseDetailsViewModel extends ViewModel {
         this.currentCourseRegisteredUsersMap = currentCourseRegisteredUsersMap;
     }
 
-    public Map<String, String> getCurrentCourseReviews() {
+    public Map<String, Review> getCurrentCourseReviews() {
         return currentCourseReviews;
     }
 
-    public void setCurrentCourseReviews(Map<String, String> currentCourseReviews) {
+    public void setCurrentCourseReviews(Map<String, Review> currentCourseReviews) {
         this.currentCourseReviews = currentCourseReviews;
     }
 
@@ -50,6 +51,10 @@ public class CourseDetailsViewModel extends ViewModel {
 
     public void setCurrentCourse(Course currentCourse) {
         this.currentCourse = currentCourse;
+    }
+
+    public LiveData<ServerRequest> postReview(String courseId, Review review){
+        return courseRepository.postReview(courseId, review);
     }
 
 }

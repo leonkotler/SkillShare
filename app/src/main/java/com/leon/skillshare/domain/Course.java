@@ -11,7 +11,7 @@ public class Course {
     private String authorEmail;
 
     private double price;
-    private Map<String, String> reviews;
+    private Map<String, Review> reviews;
     private Map<String, String> registeredUsers;
 
     public Course() {
@@ -66,11 +66,11 @@ public class Course {
         this.price = price;
     }
 
-    public Map<String, String> getReviews() {
+    public Map<String, Review> getReviews() {
         return reviews;
     }
 
-    public void setReviews(Map<String, String> reviews) {
+    public void setReviews(Map<String, Review> reviews) {
         this.reviews = reviews;
     }
 

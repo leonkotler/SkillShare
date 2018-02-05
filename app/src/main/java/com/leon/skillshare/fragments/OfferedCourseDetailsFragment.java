@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.leon.skillshare.R;
 import com.leon.skillshare.domain.Course;
+import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.viewmodels.CourseDetailsViewModel;
 
 import java.util.Map;
@@ -83,8 +84,8 @@ public class OfferedCourseDetailsFragment extends Fragment {
         else {
             StringBuilder sb = new StringBuilder();
 
-            for (Map.Entry<String, String> entry : course.getReviews().entrySet())
-                sb.append("\"" + entry.getValue() + "\" by - " + entry.getKey() + '\n');
+            for (Map.Entry<String, Review> entry : course.getReviews().entrySet())
+                sb.append("\"" + entry.getValue().getContent() + "\" by - " + entry.getValue().getUserEmail() + '\n' + '\n');
 
             reviewsTv.setText(sb);
         }

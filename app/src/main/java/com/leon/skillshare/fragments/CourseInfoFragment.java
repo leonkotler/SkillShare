@@ -2,19 +2,23 @@ package com.leon.skillshare.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leon.skillshare.R;
 import com.leon.skillshare.domain.Course;
+import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.domain.ServerRequest;
 import com.leon.skillshare.viewmodels.CourseDetailsViewModel;
 import com.leon.skillshare.viewmodels.UserDetailsViewModel;
@@ -38,6 +42,9 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
     private ProgressBar btnProgressBar;
     private CourseDetailsViewModel courseDetailsVm;
     private UserDetailsViewModel userDetailsViewVm;
+    private AlertDialog reviewDialog;
+    private AlertDialog.Builder reviewDialogBuilder;
+    private EditText reviewInput;
 
     @Nullable
     @Override
@@ -49,6 +56,7 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
         userDetailsViewVm = ViewModelProviders.of(this).get(UserDetailsViewModel.class);
 
         bindViewsOfWidget(view);
+        initReviewsDialog();
         registerListeners();
         populateData();
 
@@ -72,6 +80,48 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
     private void registerListeners() {
         joinBtn.setOnClickListener(this);
         reviewBtn.setOnClickListener(this);
+    }
+
+    private void initReviewsDialog() {
+
+        reviewDialogBuilder = new AlertDialog.Builder(getContext());
+        reviewInput = new EditText(getContext());
+        reviewDialogBuilder.setTitle("Add a review");
+        reviewDialogBuilder.setView(reviewInput);
+
+        reviewDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (reviewInputIsValid(reviewInput))
+                    addReviewToDB(courseId,
+                            new Review(
+                                    userDetailsViewVm.getCurrentUserId(),
+                                    userDetailsViewVm.getCurrentUserEmail(),
+                                    reviewInput.getText().toString()));
+
+                else
+                    displayReviewInputError(reviewInput);
+
+            }
+        });
+
+        reviewDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                reviewDialog.dismiss();
+            }
+        });
+
+        reviewDialog = reviewDialogBuilder.create();
+    }
+
+    private boolean reviewInputIsValid(EditText reviewInput) {
+        return !reviewInput.getText().toString().isEmpty();
+    }
+
+    private void displayReviewInputError(EditText reviewInput) {
+        reviewInput.setHint("Review must not be empty");
+        reviewInput.requestFocus();
     }
 
     private void populateData() {
@@ -116,8 +166,8 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
         else {
             StringBuilder sb = new StringBuilder();
 
-            for (Map.Entry<String, String> entry : course.getReviews().entrySet())
-                sb.append("\"" + entry.getValue() + "\" by - " + entry.getKey() + '\n');
+            for (Map.Entry<String, Review> entry : course.getReviews().entrySet())
+                sb.append("\"" + entry.getValue().getContent() + "\" by - " + entry.getValue().getUserEmail() + '\n' + '\n');
 
             reviewsTv.setText(sb);
         }
@@ -136,7 +186,7 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
     }
 
     private void joinCourse() {
-        if (!userAlreadyRegisteredToCourse()) {
+        if (!userRegisteredToCourse()) {
 
             sendJoinRequestToDB(courseId
                     , courseDetailsVm.getCurrentCourse().getName()
@@ -148,14 +198,14 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
     }
 
 
-    private boolean userAlreadyRegisteredToCourse() {
-        return courseMapHasValue(courseDetailsVm.getCurrentCourseRegisteredUsersMap(), userDetailsViewVm.getCurrentUserId());
+    private boolean userRegisteredToCourse() {
+        return courseMapHasKey(courseDetailsVm.getCurrentCourseRegisteredUsersMap(), userDetailsViewVm.getCurrentUserId());
     }
 
     private void sendJoinRequestToDB(String courseId, String courseName, String currentUserId, String currentUserEmail) {
         btnProgressBar.setVisibility(View.VISIBLE);
         joinBtn.setClickable(false);
-        courseDetailsVm.registerUserToCourse(courseId,courseName,currentUserId,currentUserEmail).observe(this, new Observer<ServerRequest>() {
+        courseDetailsVm.registerUserToCourse(courseId, courseName, currentUserId, currentUserEmail).observe(this, new Observer<ServerRequest>() {
             @Override
             public void onChanged(@Nullable ServerRequest serverRequest) {
                 btnProgressBar.setVisibility(View.GONE);
@@ -163,8 +213,7 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
                 if (serverRequest.isSucceeded()) {
                     Toast.makeText(getContext(), serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
-                }
-                else {
+                } else {
                     Toast.makeText(getContext(), serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -173,28 +222,36 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
 
     private void rateCourse() {
 
-        if (!userAlreadyLeftReview()) {
-            addReview(courseId, userDetailsViewVm.getCurrentUserId(), userDetailsViewVm.getCurrentUserEmail());
-        } else {
-            Toast.makeText(getContext(), "You are already left a review for this course this course", Toast.LENGTH_SHORT).show();
-        }
+        if (!userRegisteredToCourse()) {
+            Toast.makeText(getContext(), "You must register to a course to leave a review", Toast.LENGTH_SHORT).show();
+
+        } else if (userReviewedCourse()) {
+            Toast.makeText(getContext(), "You are already left a review for this course", Toast.LENGTH_SHORT).show();
+
+        } else
+            reviewDialog.show();
     }
 
 
-    private boolean userAlreadyLeftReview() {
-        return courseMapHasValue(courseDetailsVm.getCurrentCourseReviews(), userDetailsViewVm.getCurrentUserEmail());
+    private boolean userReviewedCourse() {
+        return courseMapHasKey(courseDetailsVm.getCurrentCourseReviews(), userDetailsViewVm.getCurrentUserId());
     }
 
-    private void addReview(String courseId, String currentUserId, String currentUserEmail) {
-
+    private void addReviewToDB(String courseId, Review review) {
+        courseDetailsVm.postReview(courseId, review).observe(this, new Observer<ServerRequest>() {
+            @Override
+            public void onChanged(@Nullable ServerRequest serverRequest) {
+                Toast.makeText(getContext(), serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private boolean courseMapHasValue(Map<String, String> map, String value) {
+    private <T> boolean  courseMapHasKey(Map<String, T> map, String key) {
         if (map == null || map.size() == 0)
             return false;
 
-        for (Map.Entry<String, String> entry : map.entrySet())
-            if (entry.getKey().equals(value))
+        for (Map.Entry<String, T> entry : map.entrySet())
+            if (entry.getKey().equals(key))
                 return true;
 
         return false;

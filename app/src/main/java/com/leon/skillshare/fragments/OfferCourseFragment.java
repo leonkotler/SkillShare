@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.leon.skillshare.R;
 import com.leon.skillshare.domain.Course;
+import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.domain.ServerRequest;
 import com.leon.skillshare.viewmodels.OfferCourseViewModel;
 import com.leon.skillshare.viewmodels.UserDetailsViewModel;
@@ -97,7 +98,7 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
         }
         course.setTargetAudience(targetAudienceEt.getText().toString());
         course.setRegisteredUsers(new HashMap<String, String>());
-        course.setReviews(new HashMap<String, String>());
+        course.setReviews(new HashMap<String, Review>());
     }
 
     private boolean courseDetailsAreValid(Course course) {

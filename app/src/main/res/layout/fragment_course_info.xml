@@ -27,7 +27,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="44dp"
-                android:text="@string/rate"
+                android:text="@string/review"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/fragment_course_info_join_btn"
                 app:layout_constraintHorizontal_bias="0.5"
