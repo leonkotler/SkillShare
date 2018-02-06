@@ -1,5 +1,7 @@
 package com.leon.skillshare.domain;
 
+import android.net.Uri;
+
 import java.util.Map;
 
 public class Course {
@@ -9,6 +11,7 @@ public class Course {
     private String targetAudience;
     private String authorId;
     private String authorEmail;
+    private String logoUrl;
 
     private double price;
     private Map<String, Review> reviews;
@@ -82,14 +85,23 @@ public class Course {
         this.registeredUsers = registeredUsers;
     }
 
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
     @Override
     public String toString() {
-        return "Course {" +
+        return "Course{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", targetAudience='" + targetAudience + '\'' +
                 ", authorId='" + authorId + '\'' +
                 ", authorEmail='" + authorEmail + '\'' +
+                ", logoUrl='" + logoUrl + '\'' +
                 ", price=" + price +
                 ", reviews=" + reviews +
                 ", registeredUsers=" + registeredUsers +

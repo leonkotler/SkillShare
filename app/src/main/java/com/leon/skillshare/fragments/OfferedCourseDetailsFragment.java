@@ -2,12 +2,14 @@ package com.leon.skillshare.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -15,6 +17,8 @@ import com.leon.skillshare.R;
 import com.leon.skillshare.domain.Course;
 import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.viewmodels.CourseDetailsViewModel;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.Map;
 
@@ -27,6 +31,7 @@ public class OfferedCourseDetailsFragment extends Fragment {
     private TextView registeredUsersTv;
     private TextView reviewsTv;
     private ProgressBar progressBar;
+    private ImageView courseLogoImgView;
 
     private CourseDetailsViewModel courseDetailsVm;
 
@@ -51,6 +56,7 @@ public class OfferedCourseDetailsFragment extends Fragment {
         registeredUsersTv = view.findViewById(R.id.fragment_offered_course_details_reg_students_text);
         reviewsTv  = view.findViewById(R.id.fragment_offered_course_details_reviews_text);
         progressBar = view.findViewById(R.id.fragment_offered_course_details_progress_bar);
+        courseLogoImgView = view.findViewById(R.id.fragment_offered_course_details_logo);
     }
 
     private void populateData() {
@@ -75,6 +81,12 @@ public class OfferedCourseDetailsFragment extends Fragment {
         courseNameTv.setText(course.getName());
         setReviews(course);
         setRegisteredUsers(course);
+        setCourseLogo(course);
+    }
+
+    private void setCourseLogo(Course course) {
+        if (course.getLogoUrl()!=null && !course.getLogoUrl().equals("NO_LOGO"))
+            Picasso.with(getContext()).load(course.getLogoUrl()).fit().centerCrop().into(courseLogoImgView);
     }
 
     private void setReviews(Course course) {

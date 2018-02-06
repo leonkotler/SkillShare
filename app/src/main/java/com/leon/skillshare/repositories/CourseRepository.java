@@ -2,17 +2,24 @@ package com.leon.skillshare.repositories;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.leon.skillshare.domain.Course;
 import com.leon.skillshare.domain.CourseDetails;
+import com.leon.skillshare.domain.ResourceUploadRequest;
 import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.domain.ServerRequest;
 
@@ -20,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class CourseRepository {
@@ -30,6 +38,7 @@ public class CourseRepository {
     }
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
+    FirebaseStorage storage = FirebaseStorage.getInstance();
 
     private CourseRepository() {
     }
@@ -85,6 +94,7 @@ public class CourseRepository {
                     CourseDetails cd = new CourseDetails();
                     cd.setCourseId(ds.getKey());
                     cd.setCourseName(ds.getValue(Course.class).getName());
+                    cd.setLogoUrl(ds.getValue(Course.class).getLogoUrl());
                     courseDetailsList.add(cd);
                 }
 
@@ -176,5 +186,26 @@ public class CourseRepository {
         });
 
         return postRequest;
+    }
+
+    public LiveData<ResourceUploadRequest> uploadCourseLogo(String courseLogoUrl) {
+
+        final MutableLiveData<ResourceUploadRequest> resourceUploadLiveData = new MutableLiveData<>();
+
+        StorageReference storageReference = storage.getReference().child("CoursePhotos/" + UUID.randomUUID().toString());
+
+        storageReference.putFile(Uri.parse(courseLogoUrl)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                resourceUploadLiveData.setValue(new ResourceUploadRequest(true, taskSnapshot.getDownloadUrl(), "Image uploaded successfully"));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                resourceUploadLiveData.setValue(new ResourceUploadRequest(false, null, e.getMessage()));
+            }
+        });
+
+        return resourceUploadLiveData;
     }
 }

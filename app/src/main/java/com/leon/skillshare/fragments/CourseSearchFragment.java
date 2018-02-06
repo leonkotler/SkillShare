@@ -2,10 +2,8 @@ package com.leon.skillshare.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -13,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -21,14 +18,13 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.leon.skillshare.R;
 import com.leon.skillshare.activities.CourseDetailsActivity;
 import com.leon.skillshare.domain.CourseDetails;
 import com.leon.skillshare.viewmodels.SearchCoursesViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,6 +136,9 @@ public class CourseSearchFragment extends Fragment {
 
             final CourseDetails courseInCtx = filteredCoursesList.get(position);
             courseName.setText(courseInCtx.getCourseName());
+
+            if (courseInCtx.getLogoUrl()!=null && !courseInCtx.getLogoUrl().equals("NO_LOGO"))
+                Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).fit().centerCrop().into(courseImg);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

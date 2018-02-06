@@ -1,7 +1,10 @@
 package com.leon.skillshare.fragments;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,27 +13,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.leon.skillshare.R;
+import com.leon.skillshare.activities.CourseDetailsActivity;
 import com.leon.skillshare.domain.Course;
+import com.leon.skillshare.domain.ResourceUploadRequest;
 import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.domain.ServerRequest;
 import com.leon.skillshare.viewmodels.OfferCourseViewModel;
 import com.leon.skillshare.viewmodels.UserDetailsViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
 
 public class OfferCourseFragment extends Fragment implements View.OnClickListener {
 
+    private static final int GALLERY_REQUEST_CODE = 999;
     private EditText courseNameEt;
     private EditText courseDescriptionEt;
     private EditText targetAudienceEt;
     private EditText priceEt;
     private Button submitBtn;
+    private Button addLogoBtn;
+    private ImageView logoImgView;
     private ProgressBar progressBar;
+    private ProgressBar addLogoProgressBar;
 
     private UserDetailsViewModel userDetailsViewModel;
     private OfferCourseViewModel offerCourseViewModel;
@@ -51,6 +62,7 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
 
     private void setListeners() {
         submitBtn.setOnClickListener(this);
+        addLogoBtn.setOnClickListener(this);
     }
 
     private void bindWidgetsOfView(View view) {
@@ -60,6 +72,9 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
         priceEt = view.findViewById(R.id.fragment_offer_course_price_input);
         submitBtn = view.findViewById(R.id.fragment_offer_course_submit_btn);
         progressBar = view.findViewById(R.id.fragment_offer_course_progress_bar);
+        addLogoBtn = view.findViewById(R.id.fragment_offer_course_add_logo_btn);
+        logoImgView = view.findViewById(R.id.fragment_offer_course_course_logo);
+        addLogoProgressBar = view.findViewById(R.id.fragment_offer_course_add_logo_progress_bar);
     }
 
     @Override
@@ -68,8 +83,13 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
             case R.id.fragment_offer_course_submit_btn:
                 submitCourseDetails();
                 break;
+            case R.id.fragment_offer_course_add_logo_btn:
+                addImage();
+                break;
         }
     }
+
+
 
     private void submitCourseDetails() {
         progressBar.setVisibility(View.VISIBLE);
@@ -86,16 +106,51 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
         }
     }
 
+    private void addImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, GALLERY_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        addLogoBtn.setVisibility(View.GONE);
+        addLogoProgressBar.setVisibility(View.VISIBLE);
+        final Uri localImgUri = data.getData();
+
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            offerCourseViewModel.uploadCourseLogo(data.getData().toString()).observe(this, new Observer<ResourceUploadRequest>() {
+
+                @Override
+                public void onChanged(@Nullable ResourceUploadRequest resourceUploadRequest) {
+                    addLogoProgressBar.setVisibility(View.GONE);
+                    addLogoBtn.setVisibility(View.VISIBLE);
+
+                    if (resourceUploadRequest.isSucceeded()){
+                        offerCourseViewModel.setCourseLogoUrl(resourceUploadRequest.getDownloadUri().toString());
+                        Picasso.with(getContext()).load(localImgUri).fit().centerCrop().into(logoImgView);
+                    } else {
+                        offerCourseViewModel.setCourseLogoUrl("NO_LOGO");
+                        Toast.makeText(getContext(), resourceUploadRequest.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
+    }
+
     private void initCourseDetails(Course course) {
         course.setName(courseNameEt.getText().toString());
         course.setDescription(courseDescriptionEt.getText().toString());
         course.setAuthorId(userDetailsViewModel.getCurrentUserId());
         course.setAuthorEmail(userDetailsViewModel.getCurrentUserEmail());
+
         try {
             course.setPrice(Double.parseDouble(priceEt.getText().toString()));
         } catch (NumberFormatException e){
             course.setPrice(0);
         }
+
+        course.setLogoUrl(offerCourseViewModel.getCourseLogoUrl());
         course.setTargetAudience(targetAudienceEt.getText().toString());
         course.setRegisteredUsers(new HashMap<String, String>());
         course.setReviews(new HashMap<String, Review>());
@@ -107,7 +162,8 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
                 && isTargetAudienceValid(course.getTargetAudience()));
     }
 
-    private void submitCourseToDB(Course course) {
+    private void submitCourseToDB(final Course course) {
+
         offerCourseViewModel.postNewCourse(course).observe(this, new Observer<ServerRequest>() {
             @Override
             public void onChanged(@Nullable ServerRequest serverRequest) {
@@ -116,11 +172,19 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
                 if (serverRequest.isSucceeded()) {
                     Toast.makeText(getContext(), serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
                     clearInputs();
+                    redirectToCourseOfferedDetails(serverRequest.getRefId());
                 } else {
                     Toast.makeText(getContext(), "An error has occurred: " + serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void redirectToCourseOfferedDetails(String refId) {
+        Intent intent = new Intent(getContext(), CourseDetailsActivity.class);
+        intent.putExtra("courseId", refId);
+        intent.putExtra("viewType", "offerCourseDetails");
+        startActivity(intent);
     }
 
     private void clearInputs() {

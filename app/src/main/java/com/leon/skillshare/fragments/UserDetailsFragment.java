@@ -14,13 +14,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.leon.skillshare.R;
 import com.leon.skillshare.activities.CourseDetailsActivity;
 import com.leon.skillshare.domain.CourseDetails;
 import com.leon.skillshare.domain.User;
 import com.leon.skillshare.viewmodels.UserDetailsViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,8 +134,8 @@ public class UserDetailsFragment extends Fragment {
 
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
-            if (view == null){
-                view = View.inflate(getContext(),R.layout.course_row, null);
+            if (view == null) {
+                view = View.inflate(getContext(), R.layout.course_row, null);
             }
 
             TextView courseName = view.findViewById(R.id.course_row_course_name);
@@ -143,6 +143,9 @@ public class UserDetailsFragment extends Fragment {
 
             final CourseDetails courseInCtx = offeringCourseList.get(position);
             courseName.setText(courseInCtx.getCourseName());
+
+            if (courseInCtx.getLogoUrl() != null && !courseInCtx.getLogoUrl().equals("NO_LOGO"))
+                Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).fit().centerCrop().into(courseImg);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -177,8 +180,8 @@ public class UserDetailsFragment extends Fragment {
 
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
-            if (view == null){
-                view = View.inflate(getContext(),R.layout.course_row, null);
+            if (view == null) {
+                view = View.inflate(getContext(), R.layout.course_row, null);
             }
 
             TextView courseName = view.findViewById(R.id.course_row_course_name);
@@ -186,6 +189,9 @@ public class UserDetailsFragment extends Fragment {
 
             final CourseDetails courseInCtx = takingCourseList.get(position);
             courseName.setText(courseInCtx.getCourseName());
+
+            if (courseInCtx.getLogoUrl() != null && !courseInCtx.getLogoUrl().equals("NO_LOGO"))
+                Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).fit().centerCrop().into(courseImg);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
