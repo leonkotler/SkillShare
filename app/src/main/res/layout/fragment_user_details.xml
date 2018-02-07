@@ -152,9 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_end="206dp"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <ProgressBar
         android:id="@+id/fragment_user_details_taking_courses_progress_bar"

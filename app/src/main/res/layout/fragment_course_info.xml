@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="45dp"
                 android:text="@string/review"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/fragment_course_info_join_btn"

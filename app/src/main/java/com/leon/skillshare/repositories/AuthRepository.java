@@ -37,18 +37,16 @@ public class AuthRepository {
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (task.isSuccessful()) {
-                    String email = task.getResult().getUser().getEmail();
 
                     loginRequestMutableLiveData.setValue(new LoginRequest(true,
-                            email,
+                            loginRequest.getEmail(),
                             loginRequest.getPassword(),
                             "Logged in successfully"));
 
                 } else {
-                    String email = task.getResult().getUser().getEmail();
 
                     loginRequestMutableLiveData.setValue(new LoginRequest(false,
-                            email,
+                            loginRequest.getEmail(),
                             loginRequest.getPassword(),
                             task.getException().getMessage()));
                 }

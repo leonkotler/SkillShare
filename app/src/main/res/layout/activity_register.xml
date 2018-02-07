@@ -1,130 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/activity_register_title"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/register"
-        android:textSize="35sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/activity_register_label_fullname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="@string/fullName"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/activity_register_title"
-        app:layout_constraintTop_toBottomOf="@+id/activity_register_title" />
-
-    <TextView
-        android:id="@+id/activity_register_label_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/email"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/activity_register_label_fullname"
-        app:layout_constraintTop_toBottomOf="@+id/activity_register_label_fullname" />
-
-    <TextView
-        android:id="@+id/activity_register_label_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/password"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/activity_register_label_email"
-        app:layout_constraintTop_toBottomOf="@+id/activity_register_label_email" />
-
-    <TextView
-        android:id="@+id/activity_register_label_college"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/college"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/activity_register_label_password"
-        app:layout_constraintTop_toBottomOf="@+id/activity_register_label_password" />
-
-    <EditText
-        android:id="@+id/activity_register_fullname_input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBaseline_toBaselineOf="@+id/activity_register_label_fullname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/activity_register_title" />
-
-    <EditText
-        android:id="@+id/activity_register_email_input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBaseline_toBaselineOf="@+id/activity_register_label_email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/activity_register_fullname_input" />
-
-    <EditText
-        android:id="@+id/activity_register_password_input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintBaseline_toBaselineOf="@+id/activity_register_label_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/activity_register_email_input" />
-
-    <Spinner
-        android:id="@+id/activity_register_college_drop_down"
-        android:layout_width="0dp"
-        android:layout_height="29dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:entries="@array/colleges"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.222"
-        app:layout_constraintStart_toStartOf="@+id/activity_register_password_input"
-        app:layout_constraintTop_toBottomOf="@+id/activity_register_password_input" />
-
-    <Button
-        android:id="@+id/activity_register_register_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="50dp"
-        android:text="@string/register"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_register_label_college" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ProgressBar
-        android:id="@+id/activity_register_progress_bar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_register_register_btn" />
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/InnerConstaintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:layout_editor_absoluteY="602dp">
+
+            <TextView
+                android:id="@+id/activity_register_label_college"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/college"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/activity_register_label_password"
+                app:layout_constraintTop_toBottomOf="@+id/activity_register_label_password" />
+
+            <EditText
+                android:id="@+id/activity_register_password_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:inputType="textPassword"
+                app:layout_constraintBaseline_toBaselineOf="@+id/activity_register_label_password"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/activity_register_title" />
+
+            <Spinner
+                android:id="@+id/activity_register_college_drop_down"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:entries="@array/colleges"
+                app:layout_constraintEnd_toEndOf="@+id/activity_register_password_input"
+                app:layout_constraintStart_toEndOf="@+id/activity_register_title"
+                app:layout_constraintTop_toBottomOf="@+id/activity_register_password_input" />
+
+            <ProgressBar
+                android:id="@+id/activity_register_progress_bar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_register_register_btn" />
+
+            <EditText
+                android:id="@+id/activity_register_fullname_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                app:layout_constraintBaseline_toBaselineOf="@+id/activity_register_label_fullname"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/activity_register_title" />
+
+            <EditText
+                android:id="@+id/activity_register_email_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                app:layout_constraintBaseline_toBaselineOf="@+id/activity_register_label_email"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/activity_register_title" />
+
+            <TextView
+                android:id="@+id/activity_register_label_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/password"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/activity_register_label_email"
+                app:layout_constraintTop_toBottomOf="@+id/activity_register_label_email" />
+
+            <TextView
+                android:id="@+id/activity_register_label_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/email"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/activity_register_label_fullname"
+                app:layout_constraintTop_toBottomOf="@+id/activity_register_label_fullname" />
+
+            <TextView
+                android:id="@+id/activity_register_label_fullname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:text="@string/fullName"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/activity_register_title"
+                app:layout_constraintTop_toBottomOf="@+id/activity_register_title" />
+
+            <TextView
+                android:id="@+id/activity_register_title"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/register"
+                android:textSize="35sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/activity_register_register_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="50dp"
+                android:text="@string/register"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_register_college_drop_down"
+                app:layout_constraintVertical_bias="0.521" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
