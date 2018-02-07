@@ -20,9 +20,10 @@ import com.leon.skillshare.activities.CourseDetailsActivity;
 import com.leon.skillshare.domain.CourseDetails;
 import com.leon.skillshare.domain.User;
 import com.leon.skillshare.viewmodels.UserDetailsViewModel;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserDetailsFragment extends Fragment {
@@ -35,8 +36,6 @@ public class UserDetailsFragment extends Fragment {
     private ProgressBar takingCoursesProgressBar;
     private ProgressBar offeringCoursesProgressBar;
     private ProgressBar userDetailsProgressBar;
-    private List<CourseDetails> offeringCourseList = new ArrayList<>();
-    private List<CourseDetails> takingCourseList = new ArrayList<>();
 
     private UserDetailsViewModel userDetailsVm;
 
@@ -63,11 +62,11 @@ public class UserDetailsFragment extends Fragment {
         final TakingCoursesListAdapter adapter = new TakingCoursesListAdapter();
         takingCoursesLv.setAdapter(adapter);
 
-        userDetailsVm.getTakingCoursesList().observe(this, new Observer<List<CourseDetails>>() {
+        userDetailsVm.getTakingCoursesLiveDataList().observe(this, new Observer<List<CourseDetails>>() {
             @Override
             public void onChanged(@Nullable List<CourseDetails> courseDetails) {
                 takingCoursesProgressBar.setVisibility(View.GONE);
-                takingCourseList = courseDetails;
+                userDetailsVm.setTakingCoursesSnapshotList(courseDetails);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -78,12 +77,12 @@ public class UserDetailsFragment extends Fragment {
         final OfferingCoursesListAdapter adapter = new OfferingCoursesListAdapter();
         offeringCoursesLv.setAdapter(adapter);
 
-        userDetailsVm.getOfferingCoursesList().observe(this, new Observer<List<CourseDetails>>() {
+        userDetailsVm.getOfferingCoursesLiveDataList().observe(this, new Observer<List<CourseDetails>>() {
 
             @Override
             public void onChanged(@Nullable List<CourseDetails> courseDetails) {
                 offeringCoursesProgressBar.setVisibility(View.GONE);
-                offeringCourseList = courseDetails;
+                userDetailsVm.setOfferingCoursesSnapshotList(courseDetails);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -119,12 +118,12 @@ public class UserDetailsFragment extends Fragment {
     class OfferingCoursesListAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return offeringCourseList.size();
+            return userDetailsVm.getOfferingCoursesSnapshotList().size();
         }
 
         @Override
         public Object getItem(int position) {
-            return offeringCourseList.get(position);
+            return userDetailsVm.getOfferingCoursesSnapshotList().get(position);
         }
 
         @Override
@@ -141,11 +140,21 @@ public class UserDetailsFragment extends Fragment {
             TextView courseName = view.findViewById(R.id.course_row_course_name);
             final ImageView courseImg = view.findViewById(R.id.course_row_course_image);
 
-            final CourseDetails courseInCtx = offeringCourseList.get(position);
+            final CourseDetails courseInCtx = userDetailsVm.getOfferingCoursesSnapshotList().get(position);
             courseName.setText(courseInCtx.getCourseName());
 
             if (courseInCtx.getLogoUrl() != null && !courseInCtx.getLogoUrl().equals("NO_LOGO"))
-                Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).fit().centerCrop().into(courseImg);
+                Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).networkPolicy(NetworkPolicy.OFFLINE).into(courseImg, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).into(courseImg);
+                    }
+                });
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -165,12 +174,12 @@ public class UserDetailsFragment extends Fragment {
     class TakingCoursesListAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return takingCourseList.size();
+            return userDetailsVm.getTakingCoursesSnapshotList().size();
         }
 
         @Override
         public Object getItem(int position) {
-            return takingCourseList.get(position);
+            return userDetailsVm.getTakingCoursesSnapshotList().get(position);
         }
 
         @Override
@@ -187,11 +196,21 @@ public class UserDetailsFragment extends Fragment {
             TextView courseName = view.findViewById(R.id.course_row_course_name);
             final ImageView courseImg = view.findViewById(R.id.course_row_course_image);
 
-            final CourseDetails courseInCtx = takingCourseList.get(position);
+            final CourseDetails courseInCtx = userDetailsVm.getTakingCoursesSnapshotList().get(position);
             courseName.setText(courseInCtx.getCourseName());
 
             if (courseInCtx.getLogoUrl() != null && !courseInCtx.getLogoUrl().equals("NO_LOGO"))
-                Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).fit().centerCrop().into(courseImg);
+                Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).networkPolicy(NetworkPolicy.OFFLINE).into(courseImg, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).into(courseImg);
+                    }
+                });
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -207,5 +226,6 @@ public class UserDetailsFragment extends Fragment {
             return view;
         }
     }
+
 
 }

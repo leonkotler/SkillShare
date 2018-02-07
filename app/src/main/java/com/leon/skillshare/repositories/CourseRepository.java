@@ -75,7 +75,7 @@ public class CourseRepository {
                 .child("coursesOffering");
 
         Map<String, Object> coursesOffering = new HashMap<>();
-        coursesOffering.put(courseId, course.getName());
+        coursesOffering.put(courseId, new CourseDetails(courseId, course.getName(), course.getLogoUrl()));
 
         updateRef.updateChildren(coursesOffering);
     }
@@ -131,10 +131,10 @@ public class CourseRepository {
         return courseLiveData;
     }
 
-    public LiveData<ServerRequest> registerUserToCourse(final String courseId, final String courseName, final String userId, String userEmail) {
+    public LiveData<ServerRequest> registerUserToCourse(final CourseDetails courseDetails, final String userId, String userEmail) {
         final MutableLiveData<ServerRequest> postRequest = new MutableLiveData<>();
 
-        DatabaseReference registeredUsers = database.getReference("courses").child(courseId).child("registeredUsers");
+        DatabaseReference registeredUsers = database.getReference("courses").child(courseDetails.getCourseId()).child("registeredUsers");
 
         Map<String, Object> newUserRegisteredEntry = new HashMap<>();
         newUserRegisteredEntry.put(userId, userEmail);
@@ -143,10 +143,10 @@ public class CourseRepository {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    postRequest.setValue(new ServerRequest(true, "Registered successfully", courseId));
-                    updateUserWithRegisteredCourse(userId, courseId, courseName);
+                    postRequest.setValue(new ServerRequest(true, "Registered successfully", courseDetails.getCourseId()));
+                    updateUserWithRegisteredCourse(userId, courseDetails);
                 } else {
-                    postRequest.setValue(new ServerRequest(false, task.getException().getMessage(), courseId));
+                    postRequest.setValue(new ServerRequest(false, task.getException().getMessage(), courseDetails.getCourseId()));
                 }
             }
         });
@@ -154,13 +154,13 @@ public class CourseRepository {
         return postRequest;
     }
 
-    private void updateUserWithRegisteredCourse(String userId, String courseId, String courseName) {
+    private void updateUserWithRegisteredCourse(String userId, CourseDetails courseDetails) {
         DatabaseReference updateRef = database.getReference("users")
                 .child(userId)
                 .child("coursesTaking");
 
         Map<String, Object> coursesTaking = new HashMap<>();
-        coursesTaking.put(courseId, courseName);
+        coursesTaking.put(courseDetails.getCourseId(), courseDetails);
 
         updateRef.updateChildren(coursesTaking);
     }

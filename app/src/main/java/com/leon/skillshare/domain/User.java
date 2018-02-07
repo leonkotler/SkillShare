@@ -8,10 +8,10 @@ public class User {
     private String email;
     private String fullName;
     private String college;
-    private Map<String, String> coursesTaking;
-    private Map<String, String> coursesOffering;
+    private Map<String, CourseDetails> coursesTaking;
+    private Map<String, CourseDetails> coursesOffering;
 
-    public User(String userId, String email, String fullName, String college, Map<String, String> coursesTaking, Map<String, String> coursesOffering) {
+    public User(String userId, String email, String fullName, String college, Map<String, CourseDetails> coursesTaking, Map<String, CourseDetails> coursesOffering) {
         this.userId = userId;
         this.email = email;
         this.fullName = fullName;
@@ -55,19 +55,19 @@ public class User {
         this.college = college;
     }
 
-    public Map<String, String> getCoursesTaking() {
+    public Map<String, CourseDetails> getCoursesTaking() {
         return coursesTaking;
     }
 
-    public void setCoursesTaking(Map<String, String> coursesTaking) {
+    public void setCoursesTaking(Map<String, CourseDetails> coursesTaking) {
         this.coursesTaking = coursesTaking;
     }
 
-    public Map<String, String> getCoursesOffering() {
+    public Map<String, CourseDetails> getCoursesOffering() {
         return coursesOffering;
     }
 
-    public void setCoursesOffering(Map<String, String> coursesOffering) {
+    public void setCoursesOffering(Map<String, CourseDetails> coursesOffering) {
         this.coursesOffering = coursesOffering;
     }
 

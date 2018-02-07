@@ -1,8 +1,11 @@
 package com.leon.skillshare.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
@@ -16,35 +19,37 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthEmailException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.leon.skillshare.R;
+import com.leon.skillshare.domain.CourseDetails;
+import com.leon.skillshare.domain.RegisterRequest;
+import com.leon.skillshare.domain.ServerRequest;
 import com.leon.skillshare.domain.User;
+import com.leon.skillshare.viewmodels.AuthViewModel;
 
 import java.util.HashMap;
 
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "RegisterActivity";
-
-
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private ProgressBar progressBar;
-
     private EditText fullNameEditText;
     private EditText emailEditText;
     private EditText passwordEditText;
     private Spinner collegeSpinner;
     private Button registerBtn;
 
+    private AuthViewModel authVm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        authVm = ViewModelProviders.of(this).get(AuthViewModel.class);
 
         bindWidgets();
         setListeners();
@@ -68,7 +73,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         switch (view.getId()) {
             case R.id.activity_register_register_btn:
-                Log.d(TAG, "onClick: Register button clicked");
                 registerBtn.setClickable(false);
                 registerUser();
                 break;
@@ -80,8 +84,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         userToRegister.setEmail(emailEditText.getText().toString().trim());
         userToRegister.setFullName(fullNameEditText.getText().toString().trim());
         userToRegister.setCollege(collegeSpinner.getSelectedItem().toString());
-        userToRegister.setCoursesOffering(new HashMap<String, String>());
-        userToRegister.setCoursesTaking(new HashMap<String, String>());
+        userToRegister.setCoursesOffering(new HashMap<String, CourseDetails>());
+        userToRegister.setCoursesTaking(new HashMap<String, CourseDetails>());
 
         String userPassword = passwordEditText.getText().toString();
 
@@ -141,58 +145,57 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void submitUserDetailsToDB(final User userToRegister, String userPassword) {
-        Log.d(TAG, "submitUserDetailsToDB: Submitting user: " + userToRegister.toString());
+
         progressBar.setVisibility(View.VISIBLE);
-        mAuth.createUserWithEmailAndPassword(userToRegister.getEmail(), userPassword)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if (task.isSuccessful()) {
-                            String userId = task.getResult().getUser().getUid();
-                            Log.d(TAG, "User has been created" );
-                            createUserWithDetails(userId, userToRegister);
+        RegisterRequest registerRequest = new RegisterRequest(userToRegister.getEmail(), userPassword);
 
-                        } else if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                            emailEditText.setError("Email already exists");
-                            emailEditText.requestFocus();
-                            progressBar.setVisibility(View.GONE);
-                            registerBtn.setClickable(true);
-
-                        } else {
-                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.GONE);
-                            registerBtn.setClickable(true);
-                        }
-                    }
-                });
-    }
-
-    private void createUserWithDetails(String userId, User userToRegister) {
-        userToRegister.setUserId(userId);
-
-        DatabaseReference users = database.getReference("users").child(userId);
-        users.setValue(userToRegister).addOnCompleteListener(new OnCompleteListener<Void>() {
+        authVm.register(registerRequest).observe(this, new Observer<RegisterRequest>() {
 
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onChanged(@Nullable RegisterRequest registerRequest) {
+                if (registerRequest.isSuccessful()) {
+
+                    userToRegister.setUserId(registerRequest.getUserId());
+                    createUserWithDetails(userToRegister);
+
+                } else if (registerRequest.getException() instanceof FirebaseAuthEmailException) {
+
+                    emailEditText.setError("Email already exists");
+                    emailEditText.requestFocus();
+                    progressBar.setVisibility(View.GONE);
+                    registerBtn.setClickable(true);
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), registerRequest.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    registerBtn.setClickable(true);
+                }
+            }
+        });
+    }
+
+    private void createUserWithDetails(User userToRegister) {
+
+        authVm.createUser(userToRegister).observe(this, new Observer<ServerRequest>() {
+
+            @Override
+            public void onChanged(@Nullable ServerRequest serverRequest) {
                 progressBar.setVisibility(View.GONE);
                 registerBtn.setClickable(true);
 
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "User details saved to DB");
-                    Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
+                if (serverRequest.isSuccessful()) {
+
+                    Toast.makeText(getApplicationContext(), serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
 
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
-
-
 }
 

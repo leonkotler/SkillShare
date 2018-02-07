@@ -24,6 +24,8 @@ import com.leon.skillshare.R;
 import com.leon.skillshare.activities.CourseDetailsActivity;
 import com.leon.skillshare.domain.CourseDetails;
 import com.leon.skillshare.viewmodels.SearchCoursesViewModel;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -32,11 +34,12 @@ import java.util.List;
 
 public class CourseSearchFragment extends Fragment {
 
-    private SearchCoursesViewModel searchCoursesVm;
+
     private EditText searchText;
     private ListView coursesLv;
     private ProgressBar progressBar;
-    private List<CourseDetails> courseDetailsList = new ArrayList<>();
+
+    private SearchCoursesViewModel searchCoursesVm;
     private CoursesListAdapter coursesListAdapter;
 
     @Nullable
@@ -78,7 +81,7 @@ public class CourseSearchFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<CourseDetails> courseDetails) {
                 progressBar.setVisibility(View.GONE);
-                courseDetailsList = courseDetails;
+                searchCoursesVm.setCourseDetailsSnapshotList(courseDetails);
                 coursesListAdapter.getFilter().filter("");
 
             }
@@ -108,16 +111,14 @@ public class CourseSearchFragment extends Fragment {
 
     class CoursesListAdapter extends BaseAdapter implements Filterable {
 
-        private ArrayList<CourseDetails> filteredCoursesList = (ArrayList<CourseDetails>) courseDetailsList;
-
         @Override
         public int getCount() {
-            return filteredCoursesList.size();
+            return searchCoursesVm.getFilteredCourseDetailsSnapshotList().size();
         }
 
         @Override
         public Object getItem(int position) {
-            return filteredCoursesList.get(position);
+            return searchCoursesVm.getFilteredCourseDetailsSnapshotList().get(position);
         }
 
         @Override
@@ -134,11 +135,21 @@ public class CourseSearchFragment extends Fragment {
             TextView courseName = view.findViewById(R.id.course_row_course_name);
             final ImageView courseImg = view.findViewById(R.id.course_row_course_image);
 
-            final CourseDetails courseInCtx = filteredCoursesList.get(position);
+            final CourseDetails courseInCtx = searchCoursesVm.getFilteredCourseDetailsSnapshotList().get(position);
             courseName.setText(courseInCtx.getCourseName());
 
             if (courseInCtx.getLogoUrl()!=null && !courseInCtx.getLogoUrl().equals("NO_LOGO"))
-                Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).fit().centerCrop().into(courseImg);
+                Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).networkPolicy(NetworkPolicy.OFFLINE).into(courseImg, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(getContext()).load(courseInCtx.getLogoUrl()).into(courseImg);
+                    }
+                });
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -161,12 +172,12 @@ public class CourseSearchFragment extends Fragment {
                     FilterResults results = new FilterResults();
                     if (constraint == null || constraint.length() == 0) {
                         //no constraint given, just return all the data. (no search)
-                        results.count = courseDetailsList.size();
-                        results.values = courseDetailsList;
+                        results.count = searchCoursesVm.getCourseDetailsSnapshotList().size();
+                        results.values = searchCoursesVm.getCourseDetailsSnapshotList();
                     } else {//do the search
                         List<CourseDetails> resultsData = new ArrayList<>();
                         String searchStr = constraint.toString().toUpperCase();
-                        for (CourseDetails o : courseDetailsList)
+                        for (CourseDetails o : searchCoursesVm.getCourseDetailsSnapshotList())
                             if (o.getCourseName().toUpperCase().startsWith(searchStr))
                                 resultsData.add(o);
                         results.count = resultsData.size();
@@ -177,7 +188,7 @@ public class CourseSearchFragment extends Fragment {
 
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
-                    filteredCoursesList = (ArrayList<CourseDetails>) results.values;
+                    searchCoursesVm.setFilteredCourseDetailsSnapshotList((ArrayList<CourseDetails>) results.values);
                     notifyDataSetChanged();
                 }
             };

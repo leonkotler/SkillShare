@@ -9,9 +9,10 @@ public class CourseDetails {
     private String courseName;
     private String logoUrl;
 
-    public CourseDetails(String courseId, String courseName) {
+    public CourseDetails(String courseId, String courseName, String logoUrl) {
         this.courseId = courseId;
         this.courseName = courseName;
+        this.logoUrl = logoUrl;
     }
 
     public CourseDetails() {

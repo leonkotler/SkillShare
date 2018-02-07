@@ -2,7 +2,7 @@ package com.leon.skillshare.domain;
 
 
 public class ServerRequest {
-    private boolean succeeded;
+    private boolean successful;
     private String message;
     private String refId;
 
@@ -14,8 +14,8 @@ public class ServerRequest {
         this.refId = refId;
     }
 
-    public ServerRequest(boolean succeeded, String message, String refId) {
-        this.succeeded = succeeded;
+    public ServerRequest(boolean successful, String message, String refId) {
+        this.successful = successful;
         this.message = message;
         this.refId = refId;
     }
@@ -23,12 +23,12 @@ public class ServerRequest {
     public ServerRequest() {
     }
 
-    public boolean isSucceeded() {
-        return succeeded;
+    public boolean isSuccessful() {
+        return successful;
     }
 
-    public void setSucceeded(boolean succeeded) {
-        this.succeeded = succeeded;
+    public void setSuccessful(boolean successful) {
+        this.successful = successful;
     }
 
     public String getMessage() {

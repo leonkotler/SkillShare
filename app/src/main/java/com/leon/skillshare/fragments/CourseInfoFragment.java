@@ -12,16 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leon.skillshare.R;
 import com.leon.skillshare.domain.Course;
+import com.leon.skillshare.domain.CourseDetails;
 import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.domain.ServerRequest;
 import com.leon.skillshare.viewmodels.CourseDetailsViewModel;
 import com.leon.skillshare.viewmodels.UserDetailsViewModel;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.Map;
 
@@ -45,6 +50,7 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
     private AlertDialog reviewDialog;
     private AlertDialog.Builder reviewDialogBuilder;
     private EditText reviewInput;
+    private ImageView courseLogoImgView;
 
     @Nullable
     @Override
@@ -75,6 +81,7 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
         joinBtn = view.findViewById(R.id.fragment_course_info_join_btn);
         progressBar = view.findViewById(R.id.fragment_course_info_progress_bar);
         btnProgressBar = view.findViewById(R.id.fragment_course_info_button_progress_bar);
+        courseLogoImgView = view.findViewById(R.id.fragment_course_info_logo);
     }
 
     private void registerListeners() {
@@ -149,6 +156,22 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
         authorTv.setText(course.getAuthorEmail());
         setPrice(course);
         setReviews(course);
+        setCourseLogo(course);
+    }
+
+    private void setCourseLogo(final Course course) {
+        if (course.getLogoUrl() != null && !course.getLogoUrl().equals("NO_LOGO"))
+            Picasso.with(getContext()).load(course.getLogoUrl()).networkPolicy(NetworkPolicy.OFFLINE).into(courseLogoImgView, new Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError() {
+                    Picasso.with(getContext()).load(course.getLogoUrl()).into(courseLogoImgView);
+                }
+            });
     }
 
 
@@ -186,15 +209,31 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
     }
 
     private void joinCourse() {
-        if (!userRegisteredToCourse()) {
 
-            sendJoinRequestToDB(courseId
-                    , courseDetailsVm.getCurrentCourse().getName()
+        if (userRegisteredToCourse())
+            Toast.makeText(getContext(), "You are already registered to this course", Toast.LENGTH_SHORT).show();
+
+        else if (userIsCourseAuthor())
+            Toast.makeText(getContext(), "You can't register to your own course", Toast.LENGTH_SHORT).show();
+
+        else {
+
+            CourseDetails courseDetails = new CourseDetails(courseId,
+                    courseDetailsVm.getCurrentCourse().getName(),
+                    courseDetailsVm.getCurrentCourse().getLogoUrl());
+
+            sendJoinRequestToDB(courseDetails
                     , userDetailsViewVm.getCurrentUserId()
                     , userDetailsViewVm.getCurrentUserEmail());
+        }
+    }
 
-        } else
-            Toast.makeText(getContext(), "You are already registered to this course", Toast.LENGTH_SHORT).show();
+    private boolean userIsCourseAuthor() {
+
+        String courseAuthor = courseDetailsVm.getCurrentCourse().getAuthorId();
+        String currentUserId = userDetailsViewVm.getCurrentUserId();
+
+        return courseAuthor.equals(currentUserId);
     }
 
 
@@ -202,15 +241,15 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
         return courseMapHasKey(courseDetailsVm.getCurrentCourseRegisteredUsersMap(), userDetailsViewVm.getCurrentUserId());
     }
 
-    private void sendJoinRequestToDB(String courseId, String courseName, String currentUserId, String currentUserEmail) {
+    private void sendJoinRequestToDB(CourseDetails courseDetails, String currentUserId, String currentUserEmail) {
         btnProgressBar.setVisibility(View.VISIBLE);
         joinBtn.setClickable(false);
-        courseDetailsVm.registerUserToCourse(courseId, courseName, currentUserId, currentUserEmail).observe(this, new Observer<ServerRequest>() {
+        courseDetailsVm.registerUserToCourse(courseDetails, currentUserId, currentUserEmail).observe(this, new Observer<ServerRequest>() {
             @Override
             public void onChanged(@Nullable ServerRequest serverRequest) {
                 btnProgressBar.setVisibility(View.GONE);
                 joinBtn.setClickable(true);
-                if (serverRequest.isSucceeded()) {
+                if (serverRequest.isSuccessful()) {
                     Toast.makeText(getContext(), serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 } else {
@@ -222,13 +261,16 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
 
     private void rateCourse() {
 
-        if (!userRegisteredToCourse()) {
+        if (userIsCourseAuthor())
+            Toast.makeText(getContext(), "You can't review your own course", Toast.LENGTH_SHORT).show();
+
+        else if (!userRegisteredToCourse())
             Toast.makeText(getContext(), "You must register to a course to leave a review", Toast.LENGTH_SHORT).show();
 
-        } else if (userReviewedCourse()) {
-            Toast.makeText(getContext(), "You are already left a review for this course", Toast.LENGTH_SHORT).show();
+        else if (userReviewedCourse())
+            Toast.makeText(getContext(), "You already left a review for this course", Toast.LENGTH_SHORT).show();
 
-        } else
+        else
             reviewDialog.show();
     }
 
@@ -246,7 +288,7 @@ public class CourseInfoFragment extends Fragment implements View.OnClickListener
         });
     }
 
-    private <T> boolean  courseMapHasKey(Map<String, T> map, String key) {
+    private <T> boolean courseMapHasKey(Map<String, T> map, String key) {
         if (map == null || map.size() == 0)
             return false;
 

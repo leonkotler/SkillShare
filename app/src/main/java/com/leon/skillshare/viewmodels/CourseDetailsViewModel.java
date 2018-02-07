@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.leon.skillshare.domain.Course;
+import com.leon.skillshare.domain.CourseDetails;
 import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.domain.ServerRequest;
 import com.leon.skillshare.repositories.CourseRepository;
@@ -41,8 +42,8 @@ public class CourseDetailsViewModel extends ViewModel {
         this.currentCourseReviews = currentCourseReviews;
     }
 
-    public LiveData<ServerRequest> registerUserToCourse(String courseId, String courseName, String userId, String userEmail) {
-        return courseRepository.registerUserToCourse(courseId, courseName, userId, userEmail);
+    public LiveData<ServerRequest> registerUserToCourse(CourseDetails courseDetails, String userId, String userEmail) {
+        return courseRepository.registerUserToCourse(courseDetails, userId, userEmail);
     }
 
     public Course getCurrentCourse() {

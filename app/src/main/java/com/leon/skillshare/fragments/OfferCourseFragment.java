@@ -128,7 +128,7 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
 
                     if (resourceUploadRequest.isSucceeded()){
                         offerCourseViewModel.setCourseLogoUrl(resourceUploadRequest.getDownloadUri().toString());
-                        Picasso.with(getContext()).load(localImgUri).fit().centerCrop().into(logoImgView);
+                        Picasso.with(getContext()).load(localImgUri).into(logoImgView);
                     } else {
                         offerCourseViewModel.setCourseLogoUrl("NO_LOGO");
                         Toast.makeText(getContext(), resourceUploadRequest.getMessage(), Toast.LENGTH_LONG).show();
@@ -169,7 +169,7 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
             public void onChanged(@Nullable ServerRequest serverRequest) {
                 progressBar.setVisibility(View.GONE);
                 submitBtn.setClickable(true);
-                if (serverRequest.isSucceeded()) {
+                if (serverRequest.isSuccessful()) {
                     Toast.makeText(getContext(), serverRequest.getMessage(), Toast.LENGTH_SHORT).show();
                     clearInputs();
                     redirectToCourseOfferedDetails(serverRequest.getRefId());

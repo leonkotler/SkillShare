@@ -18,6 +18,7 @@ import com.leon.skillshare.domain.Course;
 import com.leon.skillshare.domain.Review;
 import com.leon.skillshare.viewmodels.CourseDetailsViewModel;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.Map;
@@ -84,9 +85,19 @@ public class OfferedCourseDetailsFragment extends Fragment {
         setCourseLogo(course);
     }
 
-    private void setCourseLogo(Course course) {
+    private void setCourseLogo(final Course course) {
         if (course.getLogoUrl()!=null && !course.getLogoUrl().equals("NO_LOGO"))
-            Picasso.with(getContext()).load(course.getLogoUrl()).fit().centerCrop().into(courseLogoImgView);
+            Picasso.with(getContext()).load(course.getLogoUrl()).networkPolicy(NetworkPolicy.OFFLINE).into(courseLogoImgView, new Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError() {
+                    Picasso.with(getContext()).load(course.getLogoUrl()).into(courseLogoImgView);
+                }
+            });
     }
 
     private void setReviews(Course course) {
