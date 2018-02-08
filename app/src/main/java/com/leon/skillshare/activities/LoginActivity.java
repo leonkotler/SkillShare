@@ -73,30 +73,58 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        progressBar.setVisibility(View.VISIBLE);
-        loginBtn.setClickable(false);
-        registerBtn.setClickable(false);
+        if (inputsAreValid(email, password)) {
 
-        authVm.signIn(new LoginRequest(email, password)).observe(this, new Observer<LoginRequest>() {
+            progressBar.setVisibility(View.VISIBLE);
+            loginBtn.setClickable(false);
+            registerBtn.setClickable(false);
 
-            @Override
-            public void onChanged(@Nullable LoginRequest loginRequest) {
+            authVm.signIn(new LoginRequest(email, password)).observe(this, new Observer<LoginRequest>() {
 
-                progressBar.setVisibility(View.GONE);
-                loginBtn.setClickable(true);
-                registerBtn.setClickable(true);
+                @Override
+                public void onChanged(@Nullable LoginRequest loginRequest) {
 
-                if (loginRequest.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), loginRequest.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    loginBtn.setClickable(true);
+                    registerBtn.setClickable(true);
 
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), loginRequest.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (loginRequest.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), loginRequest.getMessage(), Toast.LENGTH_SHORT).show();
+
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), loginRequest.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
 
+    }
+
+    private boolean inputsAreValid(String email, String password) {
+        if (emailIsValid(email) && passwordIsValid(password))
+            return true;
+        else
+            return false;
+    }
+
+    private boolean emailIsValid(String email) {
+        if (email == null || email.isEmpty()) {
+            emailEditText.setError("Email must not be empty");
+            emailEditText.requestFocus();
+            return false;
+        } else
+            return true;
+    }
+
+    private boolean passwordIsValid(String password) {
+        if (password == null || password.isEmpty()) {
+            passwordEditText.setError("Password must not be empty");
+            passwordEditText.requestFocus();
+            return false;
+        } else
+            return true;
     }
 }
 

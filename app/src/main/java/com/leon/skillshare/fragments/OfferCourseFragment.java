@@ -192,6 +192,8 @@ public class OfferCourseFragment extends Fragment implements View.OnClickListene
         courseDescriptionEt.setText("");
         targetAudienceEt.setText("");
         priceEt.setText("");
+        offerCourseViewModel.setCourseLogoUrl("NO_LOGO");
+        Picasso.with(getContext()).load(android.R.drawable.ic_menu_gallery).into(logoImgView);
     }
 
     private boolean isCourseNameValid(String name) {

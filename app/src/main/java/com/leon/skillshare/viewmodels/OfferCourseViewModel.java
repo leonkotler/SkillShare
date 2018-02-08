@@ -19,6 +19,7 @@ public class OfferCourseViewModel extends ViewModel {
 
     public OfferCourseViewModel() {
         courseRepository = CourseRepository.getInstance();
+        courseLogoUrl = "NO_LOGO";
     }
 
     public LiveData<ServerRequest> postNewCourse(Course course){
